@@ -1,0 +1,201 @@
+// Constructor build.gradle
+//import groovyx.gpars.GParsPool
+apply plugin: 'groovy'
+apply plugin:'application'
+
+buildscript {
+    repositories {
+	  mavenCentral()
+    }
+}
+
+
+repositories{
+    mavenCentral()
+}
+
+
+def compatibilityVersion = 1.8
+sourceCompatibility = compatibilityVersion
+targetCompatibility = compatibilityVersion
+
+// javadoc only works if java source  exists
+defaultTasks 'clean', 'build', 'installDist', 'startScripts', 'distTar', 'distZip', 'groovydoc', 'run'
+
+// project version
+version = "1.0-${new Date().format('yyyyMMdd')}"
+
+mainClassName = "com.jnorthr.Constructor";  
+
+task runTM(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.TemplateMaker'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+task runMH(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.MakeHelper'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+task runNG(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.NameGenerator'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+task runGit(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.GitHelper'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+task runCH(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.ConfigHandler'
+    classpath = configurations.runtimeClasspath
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+task runChooser(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.Chooser'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+task runFB(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.FolderBuilder'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+task runGH(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.GradleHelper'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+task runMC(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.ModuleChecker'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+
+
+task runMake(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.Make'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+
+task runCB(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.ComboBox'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+
+task runCopier(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.Copier'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+task(runLP, dependsOn: 'classes', type: JavaExec) {
+    main = 'com.jnorthr.utilities.tools.Result'
+    classpath = sourceSets.main.runtimeClasspath
+    args 'World'
+    systemProperty 'simple.message', 'Hello '
+}
+task runResult(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.tools.Result'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+task runChkObj(type: JavaExec, dependsOn: 'classes') {
+    main = 'com.jnorthr.utilities.tools.ChkObj'
+    classpath = configurations.runtimeOnly
+    classpath+=sourceSets.main.runtimeClasspath
+} // end of run
+
+
+// groovy plugin needs these declarations
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:3.0.8'
+    implementation 'org.apache.ivy:ivy:2.4.0'
+
+    testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
+    testImplementation 'org.springframework.boot:spring-boot:2.5.0'
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.4.5'
+}
+
+
+test {
+        maxParallelForks = Runtime.getRuntime().availableProcessors()
+        testLogging {
+            showStandardStreams = true
+        }
+}
+
+sourceSets {
+    main {
+        groovy {
+            srcDirs = ['src/main/groovy']
+        }
+    }
+    test {
+        groovy {
+            srcDirs = ['src/test/groovy']
+        }
+    }    
+}
+
+sourceSets.main.resources { srcDirs = ["resources"]; }
+
+
+task createDocs {
+    def docs = file("resources/")
+    outputs.dir docs
+    doLast {
+        docs.mkdirs()
+        new File(docs, "README.adoc").write("= Constructor Handbook\n\n== How To\n\nRead me!")
+    }
+}
+
+
+applicationDistribution.from(createDocs) {
+    into "docs"
+}
+
+subprojects {
+    task allDeps(type: DependencyReportTask) {}
+}
+
+task zipIT(type: Zip) {
+    from(buildDir).into('.')
+}
+
+task sourceSetProperties{
+	sourceSets {
+		main {
+			println "groovy.srcDirs = ${groovy.srcDirs}"
+			println "groovy.files = ${groovy.files.name}"
+			println "java.srcDirs = ${java.srcDirs}"
+			println "resources.srcDirs = ${resources.srcDirs}"
+			println "java.files = ${java.files.name}"
+			println "allJava.files = ${allJava.files.name}"
+			println "resources.files = ${resources.files.name}"
+			println "allSource.files = ${allSource.files.name}"
+			//println "output.classesDir = ${output.classesDir}"
+			println "output.resourcesDir = ${output.resourcesDir}"
+			println "output.files = ${output.files}"
+		}
+	}
+}
