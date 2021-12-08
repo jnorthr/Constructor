@@ -1,0 +1,58 @@
+= Constructor home page
+:linkattrs:
+:linkcss:
+:toc: right
+:toc-title: Document Index
+:icons: font
+:source-highlighter: coderay
+:docslink: https://github.com/jnorthr/Constructor[Constructor Landing Page Documentation]
+:description: Documentation to describe how to use this project.
+:doctitle: README.adoc
+
+This is a text document formatted in the `asciidoctor` style of syntax. 
+
+== Purpose 
+
+*index.html* is a website landing page for the github repo. 
+
+''''
+
+== Build Tool
+
+This project is designed to use the *Gradle* build tool. So the folder structure reflects the build tool expectations.
+
+
+There is also a tiny wrapper of tools that allow you to build and run *gradle* without installing that tool. As a trial to confirm everything is correctly
+installed, open a terminal command session. Then change directories in the root of this project. Then try a command like:
+
+[source,bash]
+----
+./gradlew check
+----
+
+''''
+
+NOTE: An active internet session is required as is a java runtime environment of JDK7 or more recent.
+
+''''
+
+First time execution (only) will force *Gradle* to download several dependencies from the internet. This is to support build script logic and speed things up after the first run.
+
+''''
+
+== Provided Scripts
+  
+Build scripts are included and these scripts have the .gradle file suffix. Their name and purpose are :
+
+ . *build.gradle* - primary tasks needed to build this project
+ 
+.Typical Execution Sequence 
+[source,bash]
+---- 
+ gradlew check
+ gradlew -b build.gradle 
+----
+
+''''
+
+NOTE: In fact, you do not need gradle, this project structure, wrapper or any other pieces. Only the folders and files within the `./webapp` folder form the `index.html` landing page. 
